@@ -1,0 +1,116 @@
+#include<stdio.h>
+#include<string.h>
+#include<time.h>
+#include<stdlib.h>
+char d_arr[20];
+char i_arr[20];
+typedef struct dt{
+    int b_id;		//book_id
+    char b_nm[50];	//book_name
+    char b_ar[50];	//book_arthor
+    int b_cp;		//book_copies
+    //char b_st[25];	//book_status
+    struct dt *nxt;
+} LD;
+typedef struct issue{
+	int bk_id;		//issued book_id
+	int usr_id;		
+	char usr_nm[40];
+	char iss_dt[30];
+	char due_dt[30];
+	struct issue *nxt;
+} ISS;
+void add_book(LD **);
+void print(LD **);
+void add_iss(LD *, ISS **, struct tm *);
+void iss_print(ISS **);
+char* due_date(struct tm *);
+char* issue_date(struct tm *);
+//void delete_iss(ISS **);
+int main()
+{
+    char opt;
+    LD *hptr = NULL;
+    ISS *hp = NULL;
+    struct tm *a;
+    time_t present = time(NULL);
+    a = localtime(&present);
+    do{
+        add_book(&hptr);
+        puts("Want to add one more data...(y/n)");
+        scanf(" %c",&opt);
+    }while(opt == 'y');
+    print(&hptr);
+    add_iss(hptr,&hp,a);
+    iss_print(&hp);
+    print(&hptr);
+}
+void add_book(LD **ptr)
+{
+    //LD *p = *ptr;
+    LD *p = (LD *)malloc(sizeof(LD));
+    puts("Enter the book data(_id,_name,_arthor,_copies,_status)...");
+    scanf("%d%s%s%d",&p->b_id,p->b_nm,p->b_ar,&p->b_cp);
+    p->nxt = NULL;
+    if(*ptr == NULL)    *ptr = p;
+    else{
+        LD *last = *ptr;
+        while(last->nxt)    last = last->nxt;
+        last->nxt = p;
+    }
+}
+void print(LD **ptr)
+{
+    LD *p = *ptr;
+    puts("Displaying the data...,");
+    while(p)
+    {
+        printf("%d %s %s %d \n",p->b_id,p->b_nm,p->b_ar,p->b_cp);
+        p = p->nxt;
+    }
+}
+void add_iss(LD *p,ISS **ptr, struct tm *a)
+{
+	LD *pt = p;
+	ISS *temp = (ISS *)malloc(sizeof(ISS));
+	puts("Enter the data for issuinng the book(bk_id,ur_id,ur_nm,iss_dt,due_dt)......");
+	scanf("%d%d%s",&temp->bk_id,&temp->usr_id,temp->usr_nm);
+	strcpy(temp->iss_dt,issue_date(a));	//equate to an issuing date function
+	strcpy(temp->due_dt,due_date(a));	//equate to an issuing due date function
+	//printf("%d %d %s %s %s\n",temp->bk_id,temp->usr_id,temp->usr_nm,temp->iss_dt,temp->due_dt);
+	while(p)
+	{
+		if((temp->bk_id)==(p->b_id))	p->b_id = p->b_id - 1;
+		p = p->nxt;
+	}
+	p=pt;
+	temp->nxt = NULL;
+	if(*ptr == NULL)	*ptr = temp;
+	else{
+		ISS *last = *ptr;
+		while(last->nxt)	last = last->nxt;
+		last->nxt = temp;
+	}
+}
+void iss_print(ISS **ptr)
+{
+	ISS *p = *ptr;
+	puts("Displaying the Issued book list...");
+	while(p){
+		printf("%d %d %s %s %s\n",p->bk_id,p->usr_id,p->usr_nm,p->iss_dt,p->due_dt);
+		p=p->nxt;
+	}
+}
+char* due_date(struct tm *a)
+{
+        a->tm_mday+=7;
+        mktime(a);
+        sprintf(d_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
+	return d_arr;
+}
+char* issue_date(struct tm *a)
+{
+        puts("THE TIME IS....");
+        sprintf(i_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
+	return i_arr;
+}
