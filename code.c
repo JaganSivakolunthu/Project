@@ -5,15 +5,14 @@
 char d_arr[20];
 char i_arr[20];
 typedef struct dt{
-    int b_id;		//book_id
-    char b_nm[50];	//book_name
-    char b_ar[50];	//book_arthor
-    int b_cp;		//book_copies
-    //char b_st[25];	//book_status
+    int b_id;		
+    char b_nm[50];	
+    char b_ar[50];	
+    int b_cp;		
     struct dt *nxt;
 } LD;
 typedef struct issue{
-	int bk_id;		//issued book_id
+	int bk_id;		
 	int usr_id;		
 	char usr_nm[40];
 	char iss_dt[30];
@@ -24,9 +23,9 @@ void add_book(LD **);
 void print(LD **);
 void add_iss(LD *, ISS **, struct tm *);
 void iss_print(ISS **);
+void update_book_details(LD **);
 char* due_date(struct tm *);
 char* issue_date(struct tm *);
-//void delete_iss(ISS **);
 int main()
 {
     char opt;
@@ -47,7 +46,7 @@ int main()
 }
 void add_book(LD **ptr)
 {
-    //LD *p = *ptr;
+    
     LD *p = (LD *)malloc(sizeof(LD));
     puts("Enter the book data(_id,_name,_arthor,_copies,_status)...");
     scanf("%d%s%s%d",&p->b_id,p->b_nm,p->b_ar,&p->b_cp);
@@ -75,12 +74,15 @@ void add_iss(LD *p,ISS **ptr, struct tm *a)
 	ISS *temp = (ISS *)malloc(sizeof(ISS));
 	puts("Enter the data for issuinng the book(bk_id,ur_id,ur_nm,iss_dt,due_dt)......");
 	scanf("%d%d%s",&temp->bk_id,&temp->usr_id,temp->usr_nm);
-	strcpy(temp->iss_dt,issue_date(a));	//equate to an issuing date function
-	strcpy(temp->due_dt,due_date(a));	//equate to an issuing due date function
-	//printf("%d %d %s %s %s\n",temp->bk_id,temp->usr_id,temp->usr_nm,temp->iss_dt,temp->due_dt);
+	strcpy(temp->iss_dt,issue_date(a));	
+	strcpy(temp->due_dt,due_date(a));
 	while(p)
 	{
-		if((temp->bk_id)==(p->b_id))	p->b_id = p->b_id - 1;
+		if((temp->bk_id)==(p->b_id)){
+		   	p->b_cp = p->b_cp - 1;
+		   	printf("Remaining Copies is %d\n",p->b_cp);
+		    break;
+		}
 		p = p->nxt;
 	}
 	p=pt;
@@ -113,4 +115,46 @@ char* issue_date(struct tm *a)
         puts("THE TIME IS....");
         sprintf(i_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
 	return i_arr;
+}
+void update_book_details(LD **ptr)
+{
+	int opt;
+	scanf("%d",&opt);
+	switch(opt)
+	{
+		case 1: up_b_id(LD **ptr);	break;
+		case 2: up_b_nm(LD **ptr);	break;
+		case 3: 
+		default : puts("Invalid Choice");	
+	}
+}
+void up_b_id(LD **ptr)
+{
+	LD *p = *ptr;
+	int id ;
+	puts("Enter the Book_ID to modify the details....");
+	scanf("%d",&id);
+	while(p){
+		if((p->b_id) == id)
+		{
+			puts("Enter the details for modification...");
+			scanf("%s%s%d",p->b_nm,p->b_ar,&p->b_cp);
+		}
+		p = p->nxt;
+	}
+}
+void up_b_nm(LD **ptr)
+{
+	LD *p = *ptr;
+	char b_n[20] ;
+	puts("Enter the Book_Name to modify the details....");
+	scanf("%s",b_n);
+	while(p){
+		if(strcmp((p->b_nm),(b_n)) == 0)
+		{
+			puts("Enter the details for modification...");
+			scanf("%s%s%d",p->b_nm,p->b_ar,&p->b_cp);
+		}
+		p = p->nxt;
+	}
 }
