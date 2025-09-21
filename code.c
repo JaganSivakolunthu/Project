@@ -24,6 +24,8 @@ void print(LD **);
 void add_iss(LD *, ISS **, struct tm *);
 void iss_print(ISS **);
 void update_book_details(LD **);
+void up_b_id(LD **);
+void up_b_nm(LD **);
 char* due_date(struct tm *);
 char* issue_date(struct tm *);
 int main()
@@ -42,6 +44,8 @@ int main()
     print(&hptr);
     add_iss(hptr,&hp,a);
     iss_print(&hp);
+    print(&hptr);
+    update_book_details(&hptr);
     print(&hptr);
 }
 void add_book(LD **ptr)
@@ -122,9 +126,9 @@ void update_book_details(LD **ptr)
 	scanf("%d",&opt);
 	switch(opt)
 	{
-		case 1: up_b_id(LD **ptr);	break;
-		case 2: up_b_nm(LD **ptr);	break;
-		case 3: 
+		case 1: up_b_id(ptr);	break;
+		case 2: up_b_nm(ptr);	break;
+		//case 3: 
 		default : puts("Invalid Choice");	
 	}
 }
@@ -137,7 +141,7 @@ void up_b_id(LD **ptr)
 	while(p){
 		if((p->b_id) == id)
 		{
-			puts("Enter the details for modification...");
+			puts("Enter the details for modification(b_nm,b_ar,b_cp)...");
 			scanf("%s%s%d",p->b_nm,p->b_ar,&p->b_cp);
 		}
 		p = p->nxt;
@@ -152,7 +156,7 @@ void up_b_nm(LD **ptr)
 	while(p){
 		if(strcmp((p->b_nm),(b_n)) == 0)
 		{
-			puts("Enter the details for modification...");
+			puts("Enter the details for modification(b_nm,b_ar,b_cp)...");
 			scanf("%s%s%d",p->b_nm,p->b_ar,&p->b_cp);
 		}
 		p = p->nxt;
