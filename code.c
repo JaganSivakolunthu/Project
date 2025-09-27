@@ -22,7 +22,7 @@ typedef struct issue{
 void add(LD **);
 void add_book(LD **);
 void print(LD **);
-void add_iss(LD *, ISS **, struct tm *);
+void add_iss(LD *, ISS **);
 void iss_print(ISS **);
 void update_book_details(LD **);
 void up_b_id(LD **);
@@ -31,18 +31,18 @@ void search_book(LD **);
 void srch_b_id(LD **);
 void srch_b_nm(LD **);
 void srch_b_ar(LD **);
+void remov(LD **);
+void remov_id(LD **);
+void remov_nm(LD **);
 void search_menu_dp();
 void remove_menu_dp();
 void update_menu_dp();
 void choice_menu_dp();
-char* due_date(struct tm *);
-char* issue_date(struct tm *);
+char* due_date();
+char* issue_date();
 int main()
 {
     int opt;
-    struct tm *a;
-    time_t present = time(NULL);
-    a = localtime(&present);
     LD *hptr = NULL;
     ISS *hp = NULL;
     while(1){
@@ -50,14 +50,14 @@ int main()
     scanf("%d",&opt);
     switch(opt)
     {
-	    case 1:	add(&hptr);	break;
+	    case 1:	add(&hptr);			break;
 	    case 2:	update_book_details(&hptr);	break;
-	    //case 3:	
-	    case 4:	search_book(&hptr);	break;
-	    case 5:	print(&hptr);	break;
-	    case 6:	add_iss(hptr,&hp,a);	break;
+	    case 3:	remov(&hptr);			break;
+	    case 4:	search_book(&hptr);		break;
+	    case 5:	print(&hptr);			break;
+	    case 6:	add_iss(hptr,&hp);		break;
 	    //case 7:
-	    case 8:	iss_print(&hp);	break;
+	    case 8:	iss_print(&hp);			break;
 	    //case 9:
             //case 10:
 	    default: puts("Invalid Choice!!!");
@@ -77,7 +77,7 @@ void add_book(LD **ptr)
 {
     
     LD *p = (LD *)malloc(sizeof(LD));
-    puts("Enter the book data(_id,_name,_arthor,_copies,_status)...");
+    puts("Enter the book data(_id,_name,_arthor,_copies)...");
     scanf("%d%s%s%d",&p->b_id,p->b_nm,p->b_ar,&p->b_cp);
     p->nxt = NULL;
     if(*ptr == NULL)    *ptr = p;
@@ -97,14 +97,14 @@ void print(LD **ptr)
         p = p->nxt;
     }
 }
-void add_iss(LD *p,ISS **ptr, struct tm *a)
+void add_iss(LD *p,ISS **ptr)
 {
 	LD *pt = p;
 	ISS *temp = (ISS *)malloc(sizeof(ISS));
 	puts("Enter the data for issuinng the book(bk_id,ur_id,ur_nm,iss_dt,due_dt)......");
 	scanf("%d%d%s",&temp->bk_id,&temp->usr_id,temp->usr_nm);
-	strcpy(temp->iss_dt,issue_date(a));	
-	strcpy(temp->due_dt,due_date(a));
+	strcpy(temp->iss_dt,issue_date());	
+	strcpy(temp->due_dt,due_date());
 	while(p)
 	{
 		if((temp->bk_id)==(p->b_id)){
@@ -132,16 +132,22 @@ void iss_print(ISS **ptr)
 		p=p->nxt;
 	}
 }
-char* due_date(struct tm *a)
+char* due_date()
 {
+	struct tm *a;
+    	time_t present = time(NULL);
+    	a = localtime(&present);
         a->tm_mday+=7;
         mktime(a);
         sprintf(d_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
 	return d_arr;
 }
-char* issue_date(struct tm *a)
+char* issue_date()
 {
-        puts("THE TIME IS....");
+    	struct tm *a;
+    	time_t present = time(NULL);
+    	a = localtime(&present);
+        //puts("THE TIME IS....");
         sprintf(i_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
 	return i_arr;
 }
@@ -154,7 +160,7 @@ void update_book_details(LD **ptr)
 	{
 		case 1: up_b_id(ptr);	break;
 		case 2: up_b_nm(ptr);	break;
-		//case 3: 
+		case 3: return ;
 		default : puts("Invalid Choice");	
 	}
 }
@@ -198,7 +204,7 @@ void search_book(LD **ptr)
 		case 1: srch_b_id(ptr);	break;
 		case 2:	srch_b_nm(ptr);	break;
 		case 3: srch_b_ar(ptr);	break;
-		//case 4: 
+		case 4: return ;
 		default: puts("Invalid Choice");
 	}
 }
@@ -241,6 +247,72 @@ void srch_b_ar(LD **ptr)
 		p = p->nxt;
 	}
 }
+
+void remov(LD **ptr)
+{
+	int i;
+	remove_menu_dp();
+	puts("Enter the choice for remove...");
+	scanf("%d",&i);
+	switch(i)
+	{
+		case 1: remov_id(ptr);break;
+		case 2: remov_nm(ptr);break;
+		case 3: return ;
+		default: puts("Invalid choice...");
+	}
+}
+
+void remov_id(LD **ptr)
+{
+	int id;
+	puts("Enter the book_id which you want to remove...");
+	scanf("%d",&id);
+	LD *p = *ptr;
+	LD *last = *ptr;
+	while(p){
+		if((p->b_id)==id){
+			if(p==*ptr)
+			{
+				*ptr=p->nxt;
+			}
+			else{
+			while((last->nxt)!=p)	last=last->nxt;
+			last->nxt=p->nxt;
+			}
+			p=0;
+			break;
+		}
+		p = p->nxt;
+	}
+}
+
+void remov_nm(LD **ptr)
+{
+	char nm[40];
+	puts("Enter the book name which you want to remove...");
+	scanf("%s",nm);
+	LD *p = *ptr;
+	LD *last = *ptr;
+	while(p){
+		if(strcmp((p->b_nm),nm)==0){
+			if(p==*ptr)
+			{
+				*ptr=p->nxt;
+			}
+			else{
+			while((last->nxt)!=p)	last=last->nxt;
+			last->nxt=p->nxt;
+			}
+			p=0;
+			break;
+		}
+		p = p->nxt;
+	}
+}
+
+
+
 void choice_menu_dp(void)
 {
     printf(" __________________________________\n");
