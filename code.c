@@ -38,6 +38,8 @@ void search_menu_dp();
 void remove_menu_dp();
 void update_menu_dp();
 void choice_menu_dp();
+void save_exit(LD **, ISS **);
+void exit_ws(void);
 char* due_date();
 char* issue_date();
 int main()
@@ -58,8 +60,8 @@ int main()
 	    case 6:	add_iss(hptr,&hp);		break;
 	    //case 7:
 	    case 8:	iss_print(&hp);			break;
-	    //case 9:
-            //case 10:
+	    case 9:	save_exit(&hptr,&hp);		break;
+            case 10:	exit_ws();			break;
 	    default: puts("Invalid Choice!!!");
     }
     }
@@ -309,6 +311,30 @@ void remov_nm(LD **ptr)
 		}
 		p = p->nxt;
 	}
+}
+void save_exit(LD **ptr, ISS **hp)
+{
+	LD *p = *ptr;
+//	FILE *fp = fopen("data.dat","w");
+	FILE *fp = fopen("data.dat","a+");
+	while(p){
+		fprintf(fp,"%d %s %s %d\n",p->b_id,p->b_nm,p->b_ar,p->b_cp);
+		p = p->nxt;
+	}
+	fclose(fp);
+	ISS *P = *hp;
+	FILE *Fp = fopen("iss.dat","a+");
+	while(P)
+	{
+		fprintf(Fp,"%d %d %s %s %s\n",P->bk_id,P->usr_id,P->usr_nm,P->iss_dt,P->due_dt);
+		P = P->nxt;
+	}
+	fclose(Fp);
+	exit(0);
+}
+void exit_ws(void)
+{
+	exit(0);
 }
 
 
