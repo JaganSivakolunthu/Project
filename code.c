@@ -22,8 +22,10 @@ typedef struct issue{
 void add(LD **);
 void add_book(LD **);
 void print(LD **);
+void output_dp(void);
 void add_iss(LD *, ISS **);
 void iss_print(ISS **);
+void iss_output_dp(void);
 void update_book_details(LD **);
 void up_b_id(LD **);
 void up_b_nm(LD **);
@@ -93,11 +95,14 @@ void print(LD **ptr)
 {
     LD *p = *ptr;
     puts("Displaying the data...,");
+    output_dp();
     while(p)
     {
-        printf("%d %s %s %d \n",p->b_id,p->b_nm,p->b_ar,p->b_cp);
+        printf("| %-7d | %-19s | %-22s | %-12d |\n",p->b_id,p->b_nm,p->b_ar,p->b_cp);
         p = p->nxt;
     }
+    puts("|_________|_____________________|________________________|______________|");
+
 }
 void add_iss(LD *p,ISS **ptr)
 {
@@ -129,10 +134,12 @@ void iss_print(ISS **ptr)
 {
 	ISS *p = *ptr;
 	puts("Displaying the Issued book list...");
+	iss_output_dp();
 	while(p){
-		printf("%d %d %s %s %s\n",p->bk_id,p->usr_id,p->usr_nm,p->iss_dt,p->due_dt);
+		printf("| %-7d | %-10d | %-20s | %-12s | %-12s |\n",p->bk_id,p->usr_id,p->usr_nm,p->iss_dt,p->due_dt);
 		p=p->nxt;
 	}
+        printf("|_________|____________|______________________|______________|______________|\n");
 }
 char* due_date()
 {
@@ -395,4 +402,18 @@ void search_menu_dp(void)
     printf("|    Enter the choice option :     |\n");
     printf("|__________________________________|\n");
 }
+void output_dp(void)
+{
+	puts(" _______________________________________________________________________");
+    puts("|         |                     |                        |              |");
+    puts("| book_id | \tbook_name\t| \tbook_author\t | no_of_copies |");
+    puts("|_________|_____________________|________________________|______________|");
 
+}
+void iss_output_dp(void)
+{
+	printf(" ___________________________________________________________________________\n");
+    printf("|         |            |                      |              |              |\n");
+    printf("| book_id | student_id |     student_name     |  issue_date  |  return_date |\n");
+	printf("|_________|____________|______________________|______________|______________|\n");
+}
