@@ -17,6 +17,7 @@ typedef struct issue{
 	char usr_nm[40];
 	char iss_dt[30];
 	char due_dt[30];
+	char ret_dt[30];
 	struct issue *nxt;
 } ISS;
 void add(LD **);
@@ -110,8 +111,10 @@ void add_iss(LD *p,ISS **ptr)
 	ISS *temp = (ISS *)malloc(sizeof(ISS));
 	puts("Enter the data for issuinng the book(bk_id,ur_id,ur_nm,iss_dt,due_dt)......");
 	scanf("%d%d%s",&temp->bk_id,&temp->usr_id,temp->usr_nm);
+
 	strcpy(temp->iss_dt,issue_date());	
 	strcpy(temp->due_dt,due_date());
+	strcpy(temp->ret_dt,"NOT RETURNED");
 	while(p)
 	{
 		if((temp->bk_id)==(p->b_id)){
@@ -136,10 +139,10 @@ void iss_print(ISS **ptr)
 	puts("Displaying the Issued book list...");
 	iss_output_dp();
 	while(p){
-		printf("| %-7d | %-10d | %-20s | %-12s | %-12s |\n",p->bk_id,p->usr_id,p->usr_nm,p->iss_dt,p->due_dt);
+		printf("| %-7d | %-10d | %-20s | %-12s | %-12s | %-12s  |\n",p->bk_id,p->usr_id,p->usr_nm,p->iss_dt,p->due_dt,p->ret_dt);
 		p=p->nxt;
 	}
-        printf("|_________|____________|______________________|______________|______________|\n");
+        printf("|_________|____________|______________________|______________|______________|_______________|\n");
 }
 char* due_date()
 {
@@ -405,15 +408,16 @@ void search_menu_dp(void)
 void output_dp(void)
 {
 	puts(" _______________________________________________________________________");
-    puts("|         |                     |                        |              |");
-    puts("| book_id | \tbook_name\t| \tbook_author\t | no_of_copies |");
-    puts("|_________|_____________________|________________________|______________|");
+        puts("|         |                     |                        |              |");
+        puts("| book_id | \tbook_name\t| \tbook_author\t | no_of_copies |");
+        puts("|_________|_____________________|________________________|______________|");
 
 }
 void iss_output_dp(void)
 {
-	printf(" ___________________________________________________________________________\n");
-    printf("|         |            |                      |              |              |\n");
-    printf("| book_id | student_id |     student_name     |  issue_date  |  return_date |\n");
-	printf("|_________|____________|______________________|______________|______________|\n");
+	printf(" ___________________________________________________________________________________________\n");
+        printf("|         |            |                      |              |              |               |\n");
+        printf("| book_id | student_id |     student_name     |  issue_date  |  due_date    | return_date   |\n");
+        printf("|_________|____________|______________________|______________|______________|_______________|\n");
+
 }
