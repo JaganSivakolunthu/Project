@@ -4,6 +4,7 @@
 #include<stdlib.h>
 char d_arr[20];
 char i_arr[20];
+char r_arr[20];
 typedef struct dt{
     int b_id;		
     char b_nm[50];	
@@ -17,7 +18,7 @@ typedef struct issue{
 	char usr_nm[40];
 	char iss_dt[30];
 	char due_dt[30];
-	char ret_dt[30];
+	char ret_dt[20];
 	struct issue *nxt;
 } ISS;
 void add(LD **);
@@ -37,14 +38,16 @@ void srch_b_ar(LD **);
 void remov(LD **);
 void remov_id(LD **);
 void remov_nm(LD **);
+void return_book(ISS **);
 void search_menu_dp();
 void remove_menu_dp();
 void update_menu_dp();
 void choice_menu_dp();
 void save_exit(LD **, ISS **);
 void exit_ws(void);
-char* due_date();
-char* issue_date();
+char* due_date(void);
+char* issue_date(void);
+char* return_date(void);
 int main()
 {
     int opt;
@@ -61,7 +64,7 @@ int main()
 	    case 4:	search_book(&hptr);		break;
 	    case 5:	print(&hptr);			break;
 	    case 6:	add_iss(hptr,&hp);		break;
-	    //case 7:
+	    case 7:	return_book(&hp);		break;
 	    case 8:	iss_print(&hp);			break;
 	    case 9:	save_exit(&hptr,&hp);		break;
             case 10:	exit_ws();			break;
@@ -133,6 +136,27 @@ void add_iss(LD *p,ISS **ptr)
 		last->nxt = temp;
 	}
 }
+
+void return_book(ISS **ptr)
+{       
+        char v;
+        ISS *p = *ptr;
+        int t_bid, t_uid;
+        puts("Enter the book_id & user_id for returning...");
+        scanf("%d%d",&t_bid,&t_uid);
+        while(p)
+        {
+                if((p->bk_id == t_bid)&&(p->usr_id == t_uid))
+                {
+                        puts("Does the book has been returned?(y/n)");
+                        scanf(" %c",&v);
+                        if(v=='y')
+                        strcpy(p->ret_dt,return_date());
+                }
+                p =p->nxt;
+        }
+} 
+
 void iss_print(ISS **ptr)
 {
 	ISS *p = *ptr;
@@ -144,7 +168,7 @@ void iss_print(ISS **ptr)
 	}
         printf("|_________|____________|______________________|______________|______________|_______________|\n");
 }
-char* due_date()
+char* due_date(void)
 {
 	struct tm *a;
     	time_t present = time(NULL);
@@ -154,7 +178,7 @@ char* due_date()
         sprintf(d_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
 	return d_arr;
 }
-char* issue_date()
+char* issue_date(void)
 {
     	struct tm *a;
     	time_t present = time(NULL);
@@ -162,6 +186,17 @@ char* issue_date()
         //puts("THE TIME IS....");
         sprintf(i_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
 	return i_arr;
+}
+char* return_date(void)
+{
+	struct tm *a;
+        time_t present = time(NULL);
+        a = localtime(&present);
+        //a->tm_mday+=7;
+        mktime(a);
+        sprintf(r_arr,"%d-%d-%d",a->tm_mday,a->tm_mon+1,a->tm_year+1900);
+        printf("%s\n",r_arr);
+	return r_arr;
 }
 void update_book_details(LD **ptr)
 {
